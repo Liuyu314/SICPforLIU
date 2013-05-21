@@ -1,0 +1,15 @@
+;(define (f n)
+;  (if (< n 3)
+;	n
+;	(+ (f (- n 1)) 
+;			 (* 2 (f (- n 2))) 
+;			 (* 3 (f (- n 3))))))
+
+;(define (f1 n)
+;  (f-iter 3 2 1 0 n))
+;(define (f-iter counter a1 a2 a3 max-counter)
+;  (if (< n counter)
+;	a1
+;	(f-iter (+ counter 1) (+ a1 (* 2 a2) (* 3 a3)) a1 a2 max-counter)))
+
+
