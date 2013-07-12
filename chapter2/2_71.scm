@@ -57,14 +57,6 @@
         ((= bit 1) (right-branch branch))
         (else (error "bad bit -- CHOOSE_BRANCH" bit))))
 
-(define sample-tree
-  (make-code-tree (make-leaf 'A 4)
-                  (make-code-tree 
-                   (make-leaf 'B 2)
-                   (make-code-tree (make-leaf 'D 1)
-                                   (make-leaf 'C 1)))))
-(define sample-massage '(0 1 1 0 0 1 0 1 0 1 1 1 0))
-
 (define (encode message tree)
   (if (null? message)
       '()
@@ -86,8 +78,6 @@
           (cons 0 (encode-symbol symbol (left-branch tree)))
           (cons 1 (encode-symbol symbol (right-branch tree))))))
    
-(define message '(A D A B B C A))   
-
 (define (generate-huffman-tree pairs)
   (successive-merge (make-leaf-set pairs)))
 
@@ -96,11 +86,15 @@
 		((null? (cdr set)) (car set))
 		(else
 		  (successive-merge (adjoin-set (make-code-tree (car set) (cadr set)) (cddr set))))))
-   
- 
-  
 
-;;> (decode sample-massage sample-tree)
-;;>'(A D A B B C A)
-;;> (encode message sample-tree)
-;;>(0 1 1 0 0 1 0 1 0 1 1 1 0)
+(define tree1 '((a 1) (b 2) (c 4) (d 8) (f 16)))
+(define tree2 '((a 1) (b 2) (c 4) (d 8) (f 16) (e 32) (f 64) (g 128) (h 256) (i 512) (j 1024)))
+
+;;>(generate-huffman-tree tree1)
+;;>(((((leaf a 1) (leaf b 2) (a b) 3) (leaf c 4) (a b c) 7) (leaf d 8) (a b c d) 15) (leaf f 16) (a b c d f) 31)
+;;
+;;>(generate-huffman-tree tree2)
+;;
+;;>(((((((((((leaf a 1) (leaf b 2) (a b) 3) (leaf c 4) (a b c) 7) (leaf d 8) (a b c d) 15) (leaf f 16) (a b c d f) 31) (leaf e 32) (a b c d f e) 63) (leaf f 64) (a b c d f e f) 127) (leaf g 128) (a b c d f e f g) 255) (leaf h 256) (a b c d f e f g h) 511) (leaf i 512) (a b c d f e f g h i) 1023) (leaf j 1024) (a b c d f e f g h i j) 2047)
+;;
+;;The most frequent symbol need 1 bit. The least frequent symbol need n-1 bits.

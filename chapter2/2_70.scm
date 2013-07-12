@@ -57,14 +57,6 @@
         ((= bit 1) (right-branch branch))
         (else (error "bad bit -- CHOOSE_BRANCH" bit))))
 
-(define sample-tree
-  (make-code-tree (make-leaf 'A 4)
-                  (make-code-tree 
-                   (make-leaf 'B 2)
-                   (make-code-tree (make-leaf 'D 1)
-                                   (make-leaf 'C 1)))))
-(define sample-massage '(0 1 1 0 0 1 0 1 0 1 1 1 0))
-
 (define (encode message tree)
   (if (null? message)
       '()
@@ -86,8 +78,6 @@
           (cons 0 (encode-symbol symbol (left-branch tree)))
           (cons 1 (encode-symbol symbol (right-branch tree))))))
    
-(define message '(A D A B B C A))   
-
 (define (generate-huffman-tree pairs)
   (successive-merge (make-leaf-set pairs)))
 
@@ -96,11 +86,29 @@
 		((null? (cdr set)) (car set))
 		(else
 		  (successive-merge (adjoin-set (make-code-tree (car set) (cadr set)) (cddr set))))))
-   
- 
   
+(define tree '((A 2) (NA 16) (BOOM 1) (SHA 3) (GET 2) (YIP 9) (JOB 2) (WAH 1)))
 
-;;> (decode sample-massage sample-tree)
-;;>'(A D A B B C A)
-;;> (encode message sample-tree)
-;;>(0 1 1 0 0 1 0 1 0 1 1 1 0)
+(define sample-tree (generate-huffman-tree tree))
+
+(define message1 '(Get a job))
+(define message2 '(Sha na na na na na na na na))
+(define message3 '(Get a job))
+(define message4 '(Sha na na na na na na na na))
+(define message5 '(Wah yip yip yip yip yip yip yip yip yip))
+(define message6 '(Sha boom))
+
+;;>(encode message1 sample-tree)
+;;>(1 1 1 1 1 1 1 0 0 1 1 1 1 0)
+;;
+;;>(encode message2 sample-tree)
+;;>(1 1 1 0 0 0 0 0 0 0 0 0)
+;;
+;;>(encode message5 sample-tree)
+;;>(1 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0)
+;;
+;;>(encode message6 sample-tree)
+;;(1 1 1 0 1 1 0 1 1)
+;;
+;;The total bits by using huffman encoding is 84.
+;;If we use fixed-length encoding, each symbol need 3 bits, and the total bits would be 108.
