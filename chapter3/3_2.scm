@@ -1,0 +1,15 @@
+(define (make-monitored f)
+  (let ((count 0))
+    (define (mf mode)
+      (cond ((eq? mode 'reset-count) (begin (set! count 0) count))
+            ((eq? mode 'how-many-calls?) count)
+            (else (begin (set! count (+ count 1)) (f mode)))))
+  mf))
+
+(define s (make-monitored sqrt))
+
+(s 100)
+(s 100)
+(s 99)
+(s 'how-many-calls?)
+(s 'reset-count)
